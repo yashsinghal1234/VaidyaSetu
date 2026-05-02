@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 
 export default function ResultPanel({ result, error, loading, toolName }) {
   const [view, setView] = useState('formatted')
+  const [copied, setCopied] = useState(false)
 
   if (loading) return (
     <div className="result-panel">
@@ -38,6 +39,23 @@ export default function ResultPanel({ result, error, loading, toolName }) {
   const aiKey = ['summary','analysis','safety_report','triage_assessment','eligibility_assessment','care_gaps'].find(k => typeof data?.[k] === 'string')
   const listKey = ['conditions','medications','observations','allergies','encounters','reports'].find(k => Array.isArray(data?.[k]))
 
+  function handleCopy() {
+    const text = view === 'raw' ? JSON.stringify(result, null, 2) : (aiKey ? data[aiKey] : JSON.stringify(data?.[listKey] || data, null, 2))
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  function handleDownload() {
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${tool}_result.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="result-panel fade">
       <div className="result-header">
@@ -48,9 +66,22 @@ export default function ResultPanel({ result, error, loading, toolName }) {
           <span key={k} className="badge b-ghost">{k}: {v}</span>
         ))}
         {meta?.elapsed_ms && <span className="result-ms" style={{marginLeft:'auto'}}>{meta.elapsed_ms}ms</span>}
-        <div className="view-toggle" style={{marginLeft: meta?.elapsed_ms ? '0' : 'auto'}}>
-          <button className={`view-btn ${view==='formatted'?'on':''}`} onClick={()=>setView('formatted')}>Formatted</button>
-          <button className={`view-btn ${view==='raw'?'on':''}`} onClick={()=>setView('raw')}>JSON</button>
+        
+        {/* Feature 5: Export / Copy Actions */}
+        <div style={{display: 'flex', gap: 12, marginLeft: meta?.elapsed_ms ? '0' : 'auto'}}>
+          <div style={{display: 'flex', gap: 4}}>
+            <button className="view-btn" onClick={handleCopy} title="Copy to clipboard" style={{display: 'flex', alignItems: 'center', gap: 4}}>
+              {copied ? <span style={{color:'var(--green)'}}>✓ Copied</span> : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</>}
+            </button>
+            <button className="view-btn" onClick={handleDownload} title="Download JSON" style={{display: 'flex', alignItems: 'center', gap: 4}}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> JSON
+            </button>
+          </div>
+          <div style={{width: 1, background: 'var(--border)'}} />
+          <div className="view-toggle">
+            <button className={`view-btn ${view==='formatted'?'on':''}`} onClick={()=>setView('formatted')}>Formatted</button>
+            <button className={`view-btn ${view==='raw'?'on':''}`} onClick={()=>setView('raw')}>Raw</button>
+          </div>
         </div>
       </div>
 
