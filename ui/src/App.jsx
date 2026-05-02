@@ -5,12 +5,13 @@ import Dashboard from './pages/Dashboard'
 import PatientSearch from './pages/PatientSearch'
 import ToolRunner from './pages/ToolRunner'
 import HealthStatus from './pages/HealthStatus'
+import LandingPage from './landing/LandingPage'
 import './index.css'
 
 const API_BASE = 'http://localhost:8000'
 
 export default function App() {
-  const [page, setPage] = useState('dashboard')
+  const [page, setPage] = useState('landing')
   const [healthData, setHealthData] = useState(null)
   const [healthStatus, setHealthStatus] = useState('checking')
   const [selectedPatientId, setSelectedPatientId] = useState('')
@@ -38,6 +39,10 @@ export default function App() {
   }
 
   const props = { apiBase: API_BASE, selectedPatientId, setSelectedPatientId, setActivePage: setPage, callHistory, addToHistory, healthData }
+
+  if (page === 'landing') {
+    return <LandingPage onEnterApp={() => setPage('dashboard')} />
+  }
 
   return (
     <div className="shell">
