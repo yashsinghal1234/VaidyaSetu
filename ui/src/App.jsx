@@ -16,15 +16,9 @@ export default function App() {
   const [healthStatus, setHealthStatus] = useState('checking')
   const [selectedPatientId, setSelectedPatientId] = useState('')
   const [callHistory, setCallHistory] = useState([])
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem('isDarkMode')
-    return saved ? JSON.parse(saved) : true
-  })
-
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
-    localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode))
-  }, [isDarkMode])
+    document.documentElement.setAttribute('data-theme', 'light')
+  }, [])
 
   useEffect(() => {
     checkHealth()
@@ -59,8 +53,6 @@ export default function App() {
         healthStatus={healthStatus} 
         healthData={healthData} 
         onLogoClick={() => setPage('landing')} 
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
       />
       <Sidebar activePage={page} setActivePage={setPage} />
       <main className="main">
