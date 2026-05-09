@@ -8,7 +8,7 @@ import HealthStatus from './pages/HealthStatus'
 import LandingPage from './landing/LandingPage'
 import './index.css'
 
-const API_BASE = 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
 
 export default function App() {
   const [page, setPage] = useState('landing')
