@@ -1,3 +1,5 @@
+import { Search, Bot, AlertTriangle, Pill, User, BarChart2, Hospital, Calendar, Microscope, TrendingUp, ShieldAlert, Siren, Dna, ClipboardCheck } from 'lucide-react'
+
 export default function Dashboard({ healthData, callHistory, setActivePage }) {
   const stats = [
     { label:'FHIR Version', value: healthData?.fhir_version ?? '—', sub:'Protocol' },
@@ -7,27 +9,27 @@ export default function Dashboard({ healthData, callHistory, setActivePage }) {
   ]
 
   const quickActions = [
-    { label:'Search Patients',   desc:'Find by name, DOB, or identifier', color:'blue',   icon:'🔍', page:'patient' },
-    { label:'AI Chart Summary',  desc:'Claude clinical briefing in seconds', color:'purple', icon:'🤖', page:'tools' },
-    { label:'ER Triage Flags',   desc:'Critical alerts in under 30 seconds', color:'red',    icon:'🚨', page:'tools' },
-    { label:'Medication Safety', desc:'Drug interactions & care gaps',       color:'green',  icon:'💊', page:'tools' },
+    { label:'Search Patients',   desc:'Find by name, DOB, or identifier', color:'blue',   icon:<Search size={24} />, page:'patient' },
+    { label:'AI Chart Summary',  desc:'AI clinical briefing in seconds', color:'purple', icon:<Bot size={24} />, page:'tools' },
+    { label:'ER Triage Flags',   desc:'Critical alerts in under 30 seconds', color:'red',    icon:<AlertTriangle size={24} />, page:'tools' },
+    { label:'Medication Safety', desc:'Drug interactions & care gaps',       color:'green',  icon:<Pill size={24} />, page:'tools' },
   ]
 
   const TOOL_REF = [
-    { icon:'👤', name:'Get Patient',          desc:'Demographics by ID',          color:'blue' },
-    { icon:'🔍', name:'Search Patients',      desc:'Name, DOB, gender, MRN',      color:'blue' },
-    { icon:'📊', name:'Observations',         desc:'Labs, vitals, surveys',        color:'blue' },
-    { icon:'🏥', name:'Conditions',           desc:'Diagnoses with ICD-10',        color:'blue' },
-    { icon:'💊', name:'Medication List',      desc:'Dosages & prescribers',        color:'blue' },
-    { icon:'🗓', name:'Encounters',           desc:'Visit & encounter history',    color:'blue' },
-    { icon:'⚠️', name:'Allergies',           desc:'Substances & reactions',       color:'blue' },
-    { icon:'🔬', name:'Diagnostic Reports',   desc:'Lab panels & radiology',       color:'blue' },
-    { icon:'🤖', name:'Summarize Patient',    desc:'AI clinical briefing',         color:'purple' },
-    { icon:'📈', name:'Analyze Observations', desc:'AI trend & anomaly detection', color:'purple' },
-    { icon:'🛡', name:'Medication Safety',    desc:'Drug interaction review',      color:'purple' },
-    { icon:'🚨', name:'Triage Flags',         desc:'ER/ICU rapid assessment',      color:'purple' },
-    { icon:'🧬', name:'Clinical Trial Match', desc:'Eligibility screening',        color:'purple' },
-    { icon:'📋', name:'Care Gaps',            desc:'Preventive care gaps',         color:'purple' },
+    { icon:<User size={20} />, name:'Get Patient',          desc:'Demographics by ID',          color:'blue' },
+    { icon:<Search size={20} />, name:'Search Patients',      desc:'Name, DOB, gender, MRN',      color:'blue' },
+    { icon:<BarChart2 size={20} />, name:'Observations',         desc:'Labs, vitals, surveys',        color:'blue' },
+    { icon:<Hospital size={20} />, name:'Conditions',           desc:'Diagnoses with ICD-10',        color:'blue' },
+    { icon:<Pill size={20} />, name:'Medication List',      desc:'Dosages & prescribers',        color:'blue' },
+    { icon:<Calendar size={20} />, name:'Encounters',           desc:'Visit & encounter history',    color:'blue' },
+    { icon:<AlertTriangle size={20} />, name:'Allergies',           desc:'Substances & reactions',       color:'blue' },
+    { icon:<Microscope size={20} />, name:'Diagnostic Reports',   desc:'Lab panels & radiology',       color:'blue' },
+    { icon:<Bot size={20} />, name:'Summarize Patient',    desc:'AI clinical briefing',         color:'purple' },
+    { icon:<TrendingUp size={20} />, name:'Analyze Observations', desc:'AI trend & anomaly detection', color:'purple' },
+    { icon:<ShieldAlert size={20} />, name:'Medication Safety',    desc:'Drug interaction review',      color:'purple' },
+    { icon:<Siren size={20} />, name:'Triage Flags',         desc:'ER/ICU rapid assessment',      color:'purple' },
+    { icon:<Dna size={20} />, name:'Clinical Trial Match', desc:'Eligibility screening',        color:'purple' },
+    { icon:<ClipboardCheck size={20} />, name:'Care Gaps',            desc:'Preventive care gaps',         color:'purple' },
   ]
 
   return (
@@ -36,7 +38,7 @@ export default function Dashboard({ healthData, callHistory, setActivePage }) {
       <div style={{marginBottom:24}}>
         <h1 style={{fontSize:'1.45rem',fontWeight:800,color:'var(--text-1)',marginBottom:4}}>Clinical Dashboard</h1>
         <p style={{color:'var(--text-3)',fontSize:'.85rem'}}>
-          AI-powered FHIR patient intelligence — real-time EHR data with Claude reasoning
+          AI-powered FHIR patient intelligence — real-time EHR data with Hugging Face reasoning
         </p>
       </div>
 

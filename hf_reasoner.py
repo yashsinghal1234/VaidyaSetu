@@ -1,41 +1,44 @@
 """
-FHIRBridge MCP — Claude Clinical Reasoner
-Sends normalised FHIR data to Claude for plain-English synthesis,
+FHIRBridge MCP — HF Clinical Reasoner
+Sends normalised FHIR data to Hugging Face for plain-English synthesis,
 anomaly detection, and clinical insights.
 """
 from __future__ import annotations
 import json
 from typing import Any
-import anthropic
+from huggingface_hub import InferenceClient
 from config import get_settings
 
 settings = get_settings()
 
 # Lazy client — created on first use
-_client: anthropic.Anthropic | None = None
+_client: InferenceClient | None = None
 
 
-def _get_client() -> anthropic.Anthropic:
+def _get_client() -> InferenceClient:
     global _client
     if _client is None:
-        if not settings.anthropic_api_key:
+        if not settings.huggingface_api_key:
             raise ValueError(
-                "ANTHROPIC_API_KEY is not set. Set it in your .env file to enable AI reasoning."
+                "HUGGINGFACE_API_KEY is not set. Set it in your .env file to enable AI reasoning."
             )
-        _client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        _client = InferenceClient(api_key=settings.huggingface_api_key)
     return _client
 
 
-def _call_claude(system_prompt: str, user_message: str, max_tokens: int = 1024) -> str:
-    """Generic Claude call — returns the text response."""
+def _call_hf(system_prompt: str, user_message: str, max_tokens: int = 1024) -> str:
+    """Generic HF call — returns the text response."""
     client = _get_client()
-    message = client.messages.create(
-        model=settings.claude_model,
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_message}
+    ]
+    response = client.chat_completion(
+        model=settings.hf_model,
+        messages=messages,
         max_tokens=max_tokens,
-        messages=[{"role": "user", "content": user_message}],
-        system=system_prompt,
     )
-    return message.content[0].text
+    return response.choices[0].message.content
 
 
 # ── Clinical prompts ───────────────────────────────────────────────────────────
@@ -55,7 +58,7 @@ def summarize_patient(
     allergies: list[dict],
     encounters: list[dict],
 ) -> str:
-    """Generate a comprehensive patient summary using Claude."""
+    """Generate a comprehensive patient summary using Hugging Face."""
     payload = {
         "patient": patient,
         "active_conditions": conditions,
@@ -76,7 +79,7 @@ Include:
 
 Patient data:
 {json.dumps(payload, indent=2, default=str)}"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=1500)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=1500)
 
 
 def analyze_observations(observations: list[dict], patient_context: dict | None = None) -> str:
@@ -95,7 +98,7 @@ Identify:
 
 Data:
 {json.dumps(payload, indent=2, default=str)}"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)
 
 
 def check_medication_safety(medications: list[dict], conditions: list[dict], allergies: list[dict]) -> str:
@@ -116,7 +119,7 @@ Evaluate:
 
 Medication and clinical data:
 {json.dumps(payload, indent=2, default=str)}"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)
 
 
 def generate_triage_flags(
@@ -143,7 +146,7 @@ Be extremely concise. Use bullet points. This will be read in under 30 seconds.
 
 Patient data:
 {json.dumps(payload, indent=2, default=str)}"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=800)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=800)
 
 
 def match_clinical_trial_eligibility(
@@ -171,7 +174,7 @@ Provide:
 ❌ **Unmet Criteria** — list criteria not met with explanation
 ❓ **Uncertain** — criteria that cannot be determined from available data
 📋 **Eligibility Verdict** — ELIGIBLE / NOT ELIGIBLE / REQUIRES FURTHER ASSESSMENT"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=1000)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=1000)
 
 
 def identify_care_gaps(
@@ -201,4 +204,4 @@ For each gap, note: **Gap Description** | **Guideline** | **Urgency** | **Recomm
 
 Patient data:
 {json.dumps(payload, indent=2, default=str)}"""
-    return _call_claude(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)
+    return _call_hf(_SYSTEM_CLINICIAN, user_msg, max_tokens=1200)

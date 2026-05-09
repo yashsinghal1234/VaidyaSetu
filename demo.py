@@ -36,7 +36,7 @@ def show(label: str, data):
 
 def main():
     console.print(Panel.fit(
-        "[bold magenta]🏥 FHIRBridge MCP — Live Demo[/bold magenta]\n"
+        "[bold magenta]FHIRBridge MCP - Live Demo[/bold magenta]\n"
         f"Target: [blue]{BASE}[/blue]  |  Patient: [cyan]{DEMO_PATIENT_ID}[/cyan]",
         border_style="magenta",
     ))
@@ -92,51 +92,51 @@ def main():
     show("Allergies", r.get("data", r))
 
     # 10. AI Summary
-    section("🤖 summarize_patient — Claude Clinical Briefing")
+    section("summarize_patient - HF Clinical Briefing")
     r = call_tool("summarize_patient", {"patient_id": DEMO_PATIENT_ID})
     data = r.get("data", {})
     if "summary" in data:
-        show("Clinical Summary (Claude)", data["summary"])
+        show("Clinical Summary (HF)", data["summary"])
     else:
         show("summarize_patient response", data)
 
     # 11. Analyze observations
-    section("🤖 analyze_observations — Anomaly Detection")
+    section("analyze_observations - Anomaly Detection")
     r = call_tool("analyze_observations", {"patient_id": DEMO_PATIENT_ID, "category": "laboratory"})
     data = r.get("data", {})
     if "analysis" in data:
-        show("Lab Analysis (Claude)", data["analysis"])
+        show("Lab Analysis (HF)", data["analysis"])
     else:
         show("analyze_observations response", data)
 
     # 12. Medication safety
-    section("🤖 check_medication_safety")
+    section("check_medication_safety")
     r = call_tool("check_medication_safety", {"patient_id": DEMO_PATIENT_ID})
     data = r.get("data", {})
     if "safety_report" in data:
-        show("Medication Safety Report (Claude)", data["safety_report"])
+        show("Medication Safety Report (HF)", data["safety_report"])
     else:
         show("medication_safety response", data)
 
     # 13. Triage flags
-    section("🚨 get_triage_flags — ER Triage Assessment")
+    section("get_triage_flags - ER Triage Assessment")
     r = call_tool("get_triage_flags", {"patient_id": DEMO_PATIENT_ID})
     data = r.get("data", {})
     if "triage_assessment" in data:
-        show("Triage Assessment (Claude)", data["triage_assessment"])
+        show("Triage Assessment (HF)", data["triage_assessment"])
     else:
         show("triage_flags response", data)
 
     # 14. Care gaps
-    section("🤖 identify_care_gaps — Preventive Care")
+    section("identify_care_gaps - Preventive Care")
     r = call_tool("identify_care_gaps", {"patient_id": DEMO_PATIENT_ID})
     data = r.get("data", {})
     if "care_gaps" in data:
-        show("Care Gaps (Claude)", data["care_gaps"])
+        show("Care Gaps (HF)", data["care_gaps"])
     else:
         show("care_gaps response", data)
 
-    console.print("\n✅ [bold green]Demo complete![/bold green]")
+    console.print("\n[bold green]Demo complete![/bold green]")
 
 
 if __name__ == "__main__":

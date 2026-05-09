@@ -23,7 +23,7 @@ export default function Sidebar({ activePage, setActivePage }) {
       <div className="sidebar-footer">
         <strong>FHIRBridge MCP v1.0</strong>
         FHIR R4 · 14 Tools
-        <br />Claude-powered reasoning
+        <br />Hugging Face-powered reasoning
       </div>
     </nav>
   )

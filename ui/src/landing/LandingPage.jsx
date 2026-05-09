@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Activity, Brain, Shield } from 'lucide-react';
 import './landing.css';
 
 export default function LandingPage({ onEnterApp }) {
@@ -53,7 +54,7 @@ function Hero({ onEnterApp }) {
           <div className="l-badge">FHIR R4 &amp; MCP COMPATIBLE</div>
           <h1 className="l-hero-title">Intelligent FHIR Data &amp; Clinical Reasoning</h1>
           <p className="l-hero-desc">
-            Bridge your hospital's EHR with Claude AI. Fetch, normalize, and reason over patient records instantly through our modern MCP dashboard.
+            Bridge your hospital's EHR with Hugging Face AI. Fetch, normalize, and reason over patient records instantly through our modern MCP dashboard.
           </p>
           <div className="l-hero-actions">
             <button className="l-btn l-btn-primary" onClick={onEnterApp}>Launch Dashboard</button>
@@ -115,11 +116,12 @@ function Stats() {
   );
 }
 
+
 function Features() {
   const feats = [
-    { icon: '🔄', title: 'Instant Data Normalization', desc: 'Converts complex, nested 500-line FHIR JSON bundles into clean, structured dictionaries for immediate clinical use.' },
-    { icon: '🧠', title: 'Claude AI Reasoning', desc: 'Synthesizes raw clinical data into actionable plain-English insights, generating comprehensive pre-consultation chart briefings.' },
-    { icon: '🛡️', title: 'Clinical Safety & Triage', desc: 'Automatically cross-references patient records for drug-drug interactions, contraindications, and rapid ER triage flags.' }
+    { icon: <Activity size={24}/>, title: 'Instant Data Normalization', desc: 'Converts complex, nested 500-line FHIR JSON bundles into clean, structured dictionaries for immediate clinical use.' },
+    { icon: <Brain size={24}/>, title: 'Hugging Face AI Reasoning', desc: 'Synthesizes raw clinical data into actionable plain-English insights, generating comprehensive pre-consultation chart briefings.' },
+    { icon: <Shield size={24}/>, title: 'Clinical Safety & Triage', desc: 'Automatically cross-references patient records for drug-drug interactions, contraindications, and rapid ER triage flags.' }
   ];
   return (
     <section id="features" className="l-features">
@@ -199,7 +201,7 @@ function Testimonials() {
 function FAQ() {
   const faqs = [
     { q: "Does it support Epic/Cerner?", a: "Yes, VaidyaSetu supports any EHR that exposes standard FHIR R4 APIs, and integrates securely using SMART on FHIR client credentials." },
-    { q: "How does the AI reasoning work?", a: "We use the Model Context Protocol (MCP) to allow Claude AI to invoke specific FHIR tools. Claude requests data, we fetch it from the EHR, and Claude synthesizes the final report." },
+    { q: "How does the AI reasoning work?", a: "We use the Model Context Protocol (MCP) to allow Hugging Face AI to invoke specific FHIR tools. The AI requests data, we fetch it from the EHR, and the AI synthesizes the final report." },
     { q: "Is patient data stored permanently?", a: "No. VaidyaSetu acts as a stateless bridge. Data is fetched on-the-fly and cached ephemerally during active sessions, maintaining strict HIPAA compliance." }
   ];
   return (

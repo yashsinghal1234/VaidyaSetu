@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 
 import fhir_client as fc
 import fhir_normalizer as fn
-import claude_reasoner as cr
+import hf_reasoner as cr
 from models import (
     GetPatientInput, SearchPatientsInput,
     GetObservationsInput, GetConditionsInput, GetMedicationsInput,
@@ -145,7 +145,7 @@ MCP_TOOLS: list[dict] = [
     },
     {
         "name": "summarize_patient",
-        "description": "Generate a Claude-powered clinical briefing for a patient — pulls all available FHIR data and synthesises it into an actionable narrative summary for clinicians.",
+        "description": "Generate a Hugging Face-powered clinical briefing for a patient — pulls all available FHIR data and synthesises it into an actionable narrative summary for clinicians.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -156,7 +156,7 @@ MCP_TOOLS: list[dict] = [
     },
     {
         "name": "analyze_observations",
-        "description": "Use Claude to analyse a patient's observations/labs for anomalies, trends, and clinically significant patterns.",
+        "description": "Use Hugging Face to analyse a patient's observations/labs for anomalies, trends, and clinically significant patterns.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -169,7 +169,7 @@ MCP_TOOLS: list[dict] = [
     },
     {
         "name": "check_medication_safety",
-        "description": "Use Claude to perform a medication safety review — identifies drug-allergy conflicts, drug-drug interactions, contraindications, and care gaps.",
+        "description": "Use Hugging Face to perform a medication safety review — identifies drug-allergy conflicts, drug-drug interactions, contraindications, and care gaps.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -203,7 +203,7 @@ MCP_TOOLS: list[dict] = [
     },
     {
         "name": "identify_care_gaps",
-        "description": "Use Claude to identify preventive care gaps, missing follow-ups, and guideline-based recommendations for a patient.",
+        "description": "Use Hugging Face to identify preventive care gaps, missing follow-ups, and guideline-based recommendations for a patient.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -239,7 +239,7 @@ def _handle_search_patients(args: dict) -> dict:
         "birthdate": args.get("birthdate"),
         "gender": args.get("gender"),
         "identifier": args.get("identifier"),
-        "_count": args.get("count", 20),
+        "_count": args.get("_count", args.get("count", 5)),
     })
     raws = fc.fhir_search("Patient", params)
     return {
@@ -426,7 +426,7 @@ TOOL_HANDLERS = {
 async def lifespan(app: FastAPI):
     logger.info(f"🏥 FHIRBridge MCP starting — connected to {settings.fhir_base_url}")
     logger.info(f"🔐 Auth mode: {settings.fhir_auth_type}")
-    logger.info(f"🤖 Claude model: {settings.claude_model}")
+    logger.info(f"🤖 HF model: {settings.hf_model}")
     logger.info(f"🛠  {len(MCP_TOOLS)} tools registered")
     yield
     logger.info("FHIRBridge MCP shutting down")
@@ -485,7 +485,7 @@ async def health_check():
                 "fhir_version": fhir_version,
                 "latency_ms": latency_ms,
                 "auth_mode": settings.fhir_auth_type,
-                "claude_model": settings.claude_model,
+                "hf_model": settings.hf_model,
                 "tools_registered": len(MCP_TOOLS),
             }
     except Exception as exc:
@@ -558,10 +558,11 @@ async def call_tool(request: Request):
         )
     except Exception as exc:
         logger.exception(f"Unhandled error for tool '{tool_name}'")
+        error_msg = str(exc) or repr(exc)
         return JSONResponse(
             status_code=500,
             content=MCPErrorResponse(
-                tool=tool_name, status="error", error="internal_error", detail=str(exc)
+                tool=tool_name, status="error", error="internal_error", detail=error_msg
             ).model_dump(),
         )
 

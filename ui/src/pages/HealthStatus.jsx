@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 
 export default function HealthStatus({ apiBase, healthData, checkHealth }) {
   const [loading, setLoading] = useState(false)
@@ -27,8 +28,9 @@ export default function HealthStatus({ apiBase, healthData, checkHealth }) {
             width:52,height:52,borderRadius:'50%',flexShrink:0,
             display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',
             background: !healthData?'var(--bg-hover)': ok?'var(--green-dim)':'var(--red-dim)',
+            color: !healthData ? 'var(--text-3)' : ok ? 'var(--green)' : 'var(--red)'
           }}>
-            {!healthData ? '⏳' : ok ? '✅' : '❌'}
+            {!healthData ? <Loader2 size={28} className="spin" /> : ok ? <CheckCircle2 size={28} /> : <XCircle size={28} />}
           </div>
           <div>
             <div style={{fontSize:'1rem',fontWeight:700,marginBottom:3}}>
@@ -55,7 +57,7 @@ export default function HealthStatus({ apiBase, healthData, checkHealth }) {
               ['FHIR Version', healthData.fhir_version],
               ['Latency',      healthData.latency_ms && `${healthData.latency_ms} ms`],
               ['Auth Mode',    healthData.auth_mode],
-              ['Claude Model', healthData.claude_model],
+              ['AI Model',    healthData.hf_model],
               ['Tools',        healthData.tools_registered && `${healthData.tools_registered} registered`],
               ['Error',        healthData.error],
             ].filter(([,v])=>v).map(([k,v])=>(

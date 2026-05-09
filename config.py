@@ -20,9 +20,9 @@ class Settings(BaseSettings):
     # Static bearer
     fhir_bearer_token: str = Field("", alias="FHIR_BEARER_TOKEN")
 
-    # Anthropic
-    anthropic_api_key: str = Field("", alias="ANTHROPIC_API_KEY")
-    claude_model: str = Field("claude-sonnet-4-5", alias="CLAUDE_MODEL")
+    # Hugging Face
+    huggingface_api_key: str = Field("", alias="HUGGINGFACE_API_KEY")
+    hf_model: str = Field("HuggingFaceH4/zephyr-7b-beta", alias="HF_MODEL")
 
     # Server
     host: str = Field("0.0.0.0", alias="HOST")
